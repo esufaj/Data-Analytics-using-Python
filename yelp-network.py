@@ -1,8 +1,6 @@
 import csv, sys
-import numpy as np
-import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
+
 
 
 
@@ -22,38 +20,124 @@ import matplotlib.pyplot as plt
 
 def createNetwork():
     
-    # G = nx.graph()
+    G = nx.Graph()
 
     with open("yelp_user.csv", "r") as users:
         data = csv.reader(users, delimiter=",")
+        network = open("yelp-networkTEST7.txt", "a")
+
         
 
-        runNetwork = open('yelp-networkTest.txt', 'a')
-    
+
         for row in data:
+           
             if row[4] != 'None':
-                
                 friendSplit = row[4].split(",")
+
+                if row[0] not in G.nodes():
+                    G.add_node(row[0])
+                    
+                for friend in friendSplit:
+
+                    if friend not in G.nodes:
+                        G.add_node(friend)
+                        G.add_edge(row[0],friend)
+                    
+                # G.add_edges_from(row[0],friend)
+
+    print("Fuck marc")
+
+
+
+    for edge in G.edges():
+        network.write(edge[0] + " " + edge[1] + "\n")
+
+    print("marcs a bitch")
+    network.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+    #     seen = []
+    #     friends = []
+    #     file = open("yelp-networkTest.txt", "w")
+        
+    #     for row in data:
+           
+    #         if row[4] != 'None':
+    #             friendSplit = row[4].split(", ")
+
+    #             if row[0] not in seen:
+    #                 seen.append(row[0])
+
+    #             #friendSplit = row[4].split(",")
+    #             for friend in friendSplit:
+
+    #                 if friend not in seen:
+    #                     file.write(row[0] + " " + friend + "\n")
+
                 
-                for user in friendSplit:
-
-                    runNetwork.write(row[0] + " " +  user + " \n")
-
-
-    with open("yelp-networkTest.txt" , "r") as network:
-        network = csv.reader(network , delimiter = ",")
+                
+                    
+                        
 
         
-        for row[0] in network:
-           for row[1] in network:
-               if row[0] == row[1]:
+
+        # runNetwork = open('yelp-network.txt', 'a')
+    
+        # for row in data:
+        #     if row[4] != 'None':
+                
+        #         friendSplit = row[4].split(",")
+                
+        #         for user in friendSplit:
+
+        #             runNetwork.write(row[0] + " " +  user + " \n")
+
+
+    # with open("yelp-networkTest.txt" , "r") as network:
+    #     network = csv.reader(network , delimiter = ",")
+
+        
+    #     for row[0] in network:
+    #        for row[1] in network:
+    #            if row[0]:
                    
-                   del network
-        
-        new_file = open("yelp-network.txt", "w+")
+    #                del network
 
-        for line in network:
-            runNetwork.write(row[0] + " " +  user + " \n")                    
+
+        # df = pd.read_csv("yelp-network.txt", sep=",")
+
+        # df.head(n=3)
+
+        # print(df)
+    
+        # df.drop_duplicates(keep=False, inplace=True)
+        # # df = df[df.columns[1] != None]
+        # df.to_csv('yelpppp.txt')
+        
+        # runNetwork.write(df[0] + " " +  df[1] + " \n")
+
+
+
+
+
+
+
+                     
 
           
 
@@ -63,8 +147,9 @@ def createNetwork():
 
 
                 
-        runNetwork.close()
-        return             
+        # file.close()
+        # socialNet.close()
+    return             
                 
 
 
