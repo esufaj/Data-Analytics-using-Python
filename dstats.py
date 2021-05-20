@@ -12,7 +12,7 @@ def numOfBus(city):
         for row in data:
             if row[4] == city:
                 counter = counter + 1
-    print(counter)
+    #print(round(counter,2))
     return counter
 
 #numOfBus("McMurray")    
@@ -33,7 +33,7 @@ def avgStars(city):
                 avrStars = numStars / counter
 
     # print(numStars)        
-    print(avrStars)
+    #print(avrStars)
     # print(counter)
     return avrStars
 
@@ -49,7 +49,7 @@ def numOfRestaurants(city):
             if row[4] == city and 'Restaurants' in row[12]: 
                 counter = counter + 1    
                     
-    print(counter)
+    #print(counter)
     return counter
 
 #numOfRestaurants("McMurray")
@@ -69,7 +69,7 @@ def avgStarsRestaurants(city):
                 numStars = numStars + float(row[9])
                 avrStars = numStars / counter
     # print(numStars)        
-    print(avrStars)
+   # print(avrStars)
     # print(counter)               
     return avrStars
 
@@ -90,7 +90,7 @@ def avgNumOfReviews(city):
 
     # print(counter)        
     # print(numReviews)
-    print(avgReviews)
+    #print(avgReviews)
     return avgReviews
 
 #avgNumOfReviews("McMurray")
@@ -110,7 +110,7 @@ def avgNumOfReviewsBus(city):
 
     # print(counter)        
     # print(numReviews)
-    print(avgReviews)
+    #print(avgReviews)
     return avgReviews
 
 #avgNumOfReviewsBus('McMurray')    
@@ -144,17 +144,23 @@ def main():
 
 # printing some messages to the command line if the checks are passed, the stats will be displayed
     print("\nThe number of businesses in the city " + city + " is: ")
-    numOfBus(city) 
+    print(numOfBus(city)) 
+    
     print("\nThe average number of stars of all the businesses in the city " + city + " is: ")  
-    avgStars(city)
+    print(round(avgStars(city),2))
+    
     print("\nThe number of restaurants in the city " + city + " is: " ) 
-    numOfRestaurants(city)
+    print(numOfRestaurants(city))
+    
     print("\nThe average number of stars for all of the restaurants in the city " + city + " is: " ) 
-    avgStarsRestaurants(city)
+    print(round(avgStarsRestaurants(city),2))
+    
     print("\nThe average number of reviews for all of the businesses in the city " + city + " is: " ) 
-    avgNumOfReviews(city)
+    print(round(avgNumOfReviews(city),2))
+    
     print("\nThe average number of reviews for all of the restaurants in the city " + city + " is: " )
-    avgNumOfReviewsBus(city)
+    print(round(avgNumOfReviewsBus(city),2))
+    
     print("\n")
 
 main()

@@ -1,6 +1,5 @@
-import csv, sys, copy
+import csv, sys
 import matplotlib.pyplot as plt
-import numpy as np
 
 # restaurantCategoryDist: a frequency distribution of the number of restaurants in each category of restaurants
 # (e.g.,  Chinese,  Japanese,  Korean,  Greek,  etc.)in  a  descending  order  of popularity 
@@ -8,71 +7,60 @@ import numpy as np
 # category: #restaurants for example: Korean: 120 Italian: 110 ... 
 
 def restaurantCategoryDist(city):
-    mexCount, italCount, japCount, KorCount, greekCount, chineseCount, amerCount, frenchCount, otherCount, thaiCount, indianCount, caribbeanCount = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
     with open("yelp_business.csv", "r") as business:
-        data = csv.reader(business, delimiter = ',')
+        data = csv.reader(business, delimiter=",")
+
+        dataDict = {}
+        dataSplit = ""
     
         for row in data:
-            if row[4] == city and 'Restaurants' in row[12]: 
-                
-                if 'Mexican' in row[12]:
-                    mexCount = mexCount + 1
-                elif 'Italian' in row[12]:
-                    italCount = italCount + 1
-                elif 'Japanese' in row[12]:
-                    japCount = japCount + 1
-                elif 'Korean' in row[12]:
-                    KorCount = KorCount + 1
-                elif 'Greek' in row[12]:
-                    greekCount = greekCount + 1
-                elif 'Chinese' in row[12]:
-                    chineseCount = chineseCount + 1
-                elif 'American' in row[12]:
-                    amerCount = amerCount + 1
-                elif 'French' in row[12]:
-                    frenchCount = frenchCount + 1 
-                elif 'Thai' in row[12]:
-                    thaiCount = thaiCount + 1
-                elif 'Indian' in row[12]:
-                    indianCount = indianCount + 1
-                elif 'Caribbean' in row[12]:
-                    caribbeanCount = caribbeanCount + 1
-                else:
-                    otherCount = otherCount + 1
-        
-        dictList = {'Mexican' : mexCount, 'Italian':italCount, 'Japanese':japCount, 'Korean':KorCount, 'Greek':greekCount, 'Chinese':chineseCount,
-                'American':amerCount, 'Other':otherCount, 'Thai':thaiCount, 'Indian':indianCount, 'Caribbean':caribbeanCount}
-
-        sorteddictList = dict(sorted(dictList.items(), key=lambda item: item[1], reverse=True))
-        top10 = dict(sorteddictList.items(), key=lambda item: item[1])
-        top10.popitem()
-
-        
-
-        for key, value in sorteddictList.items():
-            print(key, ':', value)
-
-
-
-
-    categories = list(sorteddictList.keys())
-    catCounts = list(sorteddictList.values())
+            
+            if row[4] == city and 'Restaurants' in row[12]:
+               
+                dataSplit = row[12].split(";")
+               
+                for key in dataSplit:
+                   
+                    if key == 'Restaurants':
+                        continue
+                   
+                    elif key in dataDict.keys():
+                        dataDict[key] += 1
+                    
+                    else:
+                        dataDict[key] = 1
     
+    sorteddictList = dict(sorted(dataDict.items(), key=lambda item: item[1], reverse=True))
 
+#getting the first 10 elements of the sorted list
+    top10 = {k: sorteddictList[k] for k in list(sorteddictList)[:10]}
+
+#printing in the correct format wanted by prof eg: categoryTag:value
+    for key, value in sorteddictList.items():
+        print(key, ':', value)
+
+#creating the plot with the correct specifications having top 10 tags and spacing as to not cut anything off
+    categories = list(top10.keys())
+    catCounts = list(top10.values())
+    
+    plt.figure(figsize=(15,5))
     plt.ylabel('Frequency')
     plt.xlabel('Restaurant Category')
 
-    plt.title('Top 10 World Cuisines Categories In The City Of: ' + city)
+    plt.title('Top 10 Restaurant Category Tags In The City Of: ' + city)
     plt.bar(range(len(top10)), catCounts, tick_label=categories, align='center', alpha=0.5)
     #plt.tick_params(axis='x', which='major', labelsize=3)
     plt.tight_layout()
 
-    return ""        
+
+
+   
+    return sorteddictList   
 
 
 # print('\n')
-# print(str(restaurantCategoryDist('Mississauga')))
+# print(str(restaurantCategoryDist('McMurray')))
 # print('\n')
 
 # restaurantReviewDist: a frequency distribution of the number of reviews submitted for each category of restaurants 
@@ -81,139 +69,77 @@ def restaurantCategoryDist(city):
 # The output should be one line per triplet as follows: category: #reviews: avg_stars for example: Korean: 580: 4.5 Italian: 110: 3.8 ...
 
 def restaurantReviewDist(city):
-    mexCount, italCount, japCount, KorCount, greekCount, chineseCount, amerCount, frenchCount, otherCount, thaiCount, indianCount, caribbeanCount = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    mexStar, italStar, japStar, korStar, greekStar, chineseStar, amerStar, frenchStar, otherStar, thaiStar, indianStar, caribbeanStar = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-    mexrestCount, italrestCount, japrestCount, korrestCount, greekrestCount, chineserestCount, amerrestCount, frenchrestCount, otherrestCount, thairestCount, indianrestCount, caribbeanrestCount = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    avgstrMex, avgstrItal, avgstrJap, avgstrKor, avgstrGreek, avgstrChinese, avgstrAmer, avgstrFrench, avgstrOther, avgstrThai, avgstrIndian, avgstrCaribbean = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+   
+   tagCount = 0
+   starCount = 0
+   avgStars = 0.0
 
-    with open("yelp_business.csv", "r") as business:
-        data = csv.reader(business, delimiter = ',')
+   with open("yelp_business.csv", "r") as business:
+        data = csv.reader(business, delimiter=",")
+
+        # key : number of reviews
+        dataDict = {}
+
+        #key : number of stars
+        dataDict2 = {}
+
+        # dataDict3 = {}
+
+        dataSplit = ""
     
         for row in data:
-            if row[4] == city and 'Restaurants' in row[12]: 
+            
+            if row[4] == city and 'Restaurants' in row[12]:
+               
+                dataSplit = row[12].split(";")
+               
+                for key in dataSplit:
+                   
+                    if key == 'Restaurants': # if a tag == Restaurant do nothing, since we already assume we are looking at Restaurant tags
+                        continue             # we only want to increment those tags that define the TYPE of Restaurant it is
+                   
+                    if key in dataDict.keys():
+                        
+                        dataDict[key] += int(row[10])
+                    if key in dataDict2.keys():
+    
+                        dataDict2[key] += float(row[9]) 
+
+                    
+                    else:
+                        dataDict[key] = int(row[10])
+                        dataDict2[key] = float(row[9])
                 
-                if 'Mexican' in row[12]:
-                    mexCount = mexCount + int(row[10])
-                    mexStar = mexStar + float(row[9])
-                    mexrestCount +=1
-                    if mexrestCount == 0:
-                        avgstrMex = 0.0
-                    else:
-                         avgstrMex = mexStar / mexrestCount
+               
 
-                elif 'Italian' in row[12]:
-                    italCount = italCount + int(row[10])
-                    italStar = italStar + float(row[9])
-                    italrestCount +=1
-                    if italrestCount == 0:
-                        avgstrItal = 0.0
-                    else:
-                         avgstrItal = italStar / italrestCount
+        sorteddictList = dict(sorted(dataDict.items(), key=lambda item: item[1], reverse=True))
+        sorteddictList2 = dict(sorted(dataDict2.items(), key=lambda item: item[1], reverse=True))
 
-                elif 'Japanese' in row[12]:
-                    japCount = japCount + int(row[10])
-                    japStar = japStar + float(row[9])
-                    japrestCount +=1
-                    if japrestCount == 0:
-                        avgstrJap = 0.0
-                    else:
-                        avgstrJap = japStar / japrestCount
 
-                elif 'Korean' in row[12]:
-                    KorCount = KorCount + int(row[10])
-                    korStar = korStar + float(row[9])
-                    korrestCount +=1
-                    if korrestCount == 0:
-                        avgstrKor = 0.0
-                    else:
-                        avgstrKor = korStar / korrestCount
+        #printing some messages to the command line if the checks are passed, the stats will be displayed
+        print("\n The most popular categories of food by country from the city " +city+" and ranked from most popular to least are: ")
+        dictCOUNT = restaurantCategoryDist(city)
+        print("\n \n")
 
-                elif 'Greek' in row[12]:
-                    greekCount = greekCount + int(row[10])
-                    greekStar = greekStar + float(row[9])
-                    greekrestCount +=1
-                    if greekrestCount == 0:
-                        avgstrGreek = 0.0
-                    else:
-                        avgstrGreek = greekStar / greekrestCount
-
-                elif 'Chinese' in row[12]:
-                    chineseCount = chineseCount + int(row[10])
-                    chineseStar = chineseStar + float(row[9])
-                    chineserestCount +=1
-                    if chineserestCount == 0:
-                        avgstrChinese = 0.0
-                    else:
-                        avgstrChinese = chineseStar / chineserestCount
-
-                elif 'American' in row[12]:
-                    amerCount = amerCount + int(row[10])
-                    amerStar = amerStar + float(row[9])
-                    amerrestCount +=1
-                    if amerrestCount == 0:
-                        avgstrAmer = 0.0
-                    else:
-                        avgstrAmer = amerStar / amerrestCount
-
-                elif 'French' in row[12]:
-                    frenchCount = frenchCount + int(row[10])
-                    frenchStar = frenchStar + float(row[9])
-                    frenchrestCount +=1
-                    if frenchrestCount == 0:
-                        avgstrFrench = 0.0
-                    else:
-                        avgstrFrench = frenchStar / frenchrestCount
-
-                elif 'Thai' in row[12]:
-                    thaiCount = thaiCount + int(row[10])
-                    thaiStar = thaiStar + float(row[9])
-                    thairestCount +=1
-                    if thairestCount == 0:
-                        avgstrThai = 0.0
-                    else:
-                        avgstrThai = thaiStar / thairestCount
-
-                elif 'Indian' in row[12]:
-                    indianCount = indianCount + int(row[10])
-                    indianStar = indianStar + float(row[9])
-                    indianrestCount +=1
-                    if indianrestCount == 0:
-                        avgstrIndian = 0.0
-                    else:
-                        avgstrIndian = indianStar / indianrestCount
-
-                elif 'Caribbean' in row[12]:
-                    caribbeanCount = caribbeanCount + int(row[10])
-                    caribbeanStar = caribbeanStar + float(row[9])
-                    caribbeanrestCount +=1
-                    if caribbeanrestCount == 0:
-                        avgstrCaribbean = 0.0
-                    else:
-                        avgstrCaribbean = caribbeanStar / caribbeanrestCount
-
-                else:
-                    otherCount = otherCount + int(row[10])
-                    otherStar = otherStar + float(row[9])
-                    otherrestCount +=1
-                    if otherrestCount == 0:
-                        avgstrOther = 0.0
-                    else:
-                        avgstrOther = otherStar / otherrestCount
+        # #Checker to make sure no division by 0
+        # for key, value in dictCOUNT.items():
+        #     if value == 0:
+        #         dictCOUNT.update({key:'1'})
         
-        dictList = {'Mexican' : [mexCount,avgstrMex], 'Italian':[italCount,avgstrItal], 'Japanese':[japCount,avgstrJap], 
-                    'Korean':[KorCount,avgstrKor], 'Greek':[greekCount,avgstrGreek], 'Chinese':[chineseCount,avgstrChinese],
-                'American':[amerCount,avgstrAmer], 'French':[frenchCount,avgstrFrench], 'Other':[otherCount,avgstrOther],
-                'Thai':[thaiCount, avgstrThai], 'Indian':[indianCount,avgstrIndian], 'Caribbean':[caribbeanCount,avgstrCaribbean]}
 
-        sorteddictList = dict(sorted(dictList.items(), key=lambda item: item[1], reverse=True))
+        print("\n The total number of reviews for each restaurant by category from the city " +city+ ", as well as the average stars for those categories and ranked from most popular to least are: ")
 
-    for key, value in sorteddictList.items():
-        print(key, ':', value[0], ':', round(value[1],1))
+        for key, value in sorteddictList.items():
+            print(key ,':', value, ':', round(float(sorteddictList2[key]) / float(dictCOUNT[key]), 1))
+
+        # print(sorteddictList)
+        # print("\n \n \n")
+        # print(sorteddictList2)
 
 
 
     
-    return ""
+        return ""
 
 
 
@@ -226,11 +152,11 @@ def main():
         sys.exit()
    
     if sys.argv[0] != 'dist-stats.py':
-        print("\nERROR: arg[0] must be python3")
+        print("\nERROR: arg[0] must be dist-stats.py")
         sys.exit()
 
     if sys.argv[1] != 'yelp_business.csv':
-        print("\nERROR: argv[1] must be dstats.py")
+        print("\nERROR: argv[1] must be yelp_business.csv")
         sys.exit()
 
     # with open("yelp_business.csv", "r") as business:
@@ -242,14 +168,21 @@ def main():
 
     city = sys.argv[2]
                 
+    #Needed to remove the method call from here since I needed to get the dict by returning it from restuarantCategoryDist(city)
+    #and this caused the output to duplicate since I assigned the return value from restuarantCategoryDist(city)
+    #to a variable in restaurantReviewDist(city)
+    
+    # printing some messages to the command line if the checks are passed, the stats will be displayed
+    # print("\n The most popular categories of food by country from the city " +city+" and ranked from most popular to least are: ")
+    # restaurantCategoryDist(city)
 
-# printing some messages to the command line if the checks are passed, the stats will be displayed
-    print("\n The most popular categories of food by country from the city " +city+" and ranked from most popular to least are: ")
-    print(restaurantCategoryDist(city))
 
-    print("\n The total number of reviews for each restaurant by category from the city " +city+ ", as well as the average stars for those categories and ranked from most popular to least are: ")
-    print(restaurantReviewDist(city))
+    # print("\n The total number of reviews for each restaurant by category from the city " +city+ ", as well as the average stars for those categories and ranked from most popular to least are: ")
+    restaurantReviewDist(city)
     print("\n")
+
+
+    
 
 
 #calling main method for execution
