@@ -1,12 +1,15 @@
 import csv, sys
-
+import time
 
 #a  frequency  distribution  of  the  node  degrees  of  the  network,  in  a descending order of frequency 
 # (from the highest to the lowest frequency). The degree of a node is  the  number  of  edges  that  are  incident  to  the node  
 # (i.e.,  #neighbors).  The  output  should  be one line per pair of values as follows: 
-# nodeID:nodeDegreefor example:JJ-aSuM4pCFPdkfoZ34q0Q:14pzpbr9mlagHhDRdin8DvPQ:12
+# nodeID:nodeDegfor example:JJ-aSuM4pCFPdkfoZ34q0Q:14pzpbr9mlagHhDRdin8DvPQ:12
 
-def nodeDegreeDist():
+#for measuring execution time
+# start_time = time.time()
+
+def nodeDegDist():
 
     # Nodes and Edges Dict
     networkDict = {}
@@ -41,43 +44,43 @@ def nodeDegreeDist():
                     networkDict[nodesSplit[1]] += 1
                     
     #the number of nodes is = to the number of keys in the dictionary
-    number_of_nodes = len(networkDict.keys())
+    numNodes = len(networkDict.keys())
 
     #edges have not been created yet
-    number_of_edges = 0
+    numEdges = 0
     
     #looping through dict
     for node in networkDict.keys():
 
         #num of edges is = to the num of degrees the value part of the dict holds
-        number_of_edges += networkDict[node]
+        numEdges += networkDict[node]
 
-    #degTotal holds num of edges so we can use it for calculations in avgNodeDegree method
-    degTotal = int(number_of_edges)
+    #degTotal holds num of edges so we can use it for calculations in avgNodeDeg method
+    degTotal = int(numEdges)
 
     #has to divide by 2 since we are adding edge twice considering if A has B as friend then B has A as friend (bidirectional)
-    number_of_edges = int(number_of_edges / 2)
+    numEdges = int(numEdges / 2)
 
     #creating space in term
     print("\n")
 
     #printing stats in necessary format
-    print("#nodes: " + str(number_of_nodes) + "  edges: " + str(number_of_edges))
+    print("#nodes: " + str(numNodes) + "  edges: " + str(numEdges))
 
     #calling method which will output stats to file
-    nodeDegree(networkDict)
+    nodeDeg(networkDict)
 
     #printing the average node degree by passing the total number of nodes and the total degrees for all of the nodes
-    print(avgNodeDegree(number_of_nodes, degTotal))
+    print(avgNodeDeg(numNodes, degTotal))
 
 
 
 #method that takes a dictionary, sorts it in decreasing order and writes to file the user_id(node): # of incident edges to the node (user_id)
-def nodeDegree(networkDict):
+def nodeDeg(networkDict):
 
     #opening file to write outout too. Needed to write to file since outputting in terminal took > 10-15 minutes
     #writing to file took much less time approx. 2-4 min maybe less
-    output = open("nodeDegreeDist.txt", 'w')
+    output = open("nodeDegDist.txt", 'w')
 
     #sorting dict items in decreasing order
     for key, value in sorted(networkDict.items(), key=lambda item: item[1], reverse=True):
@@ -86,23 +89,23 @@ def nodeDegree(networkDict):
         output.write(key + ": " + str(value) + "\n")
 
         #for printing to console if needed
-        #print(key + ": " + str(value) + "\n")
+        # print(key + ": " + str(value) + "\n")
 
     #closing file
     output.close()
 
 
 # The average node degree of the graph.
-def avgNodeDegree(number_of_node, degTotal):
+def avgNodeDeg(number_of_node, degTotal):
 
     #calculating the average node degree which is the number of degrees in total from all of the edges divided by the number of nodes (user_ids)
-    avgNodeDegree = round(degTotal / number_of_node, 2)
+    avgNodeDeg = round(degTotal / number_of_node, 2)
 
     #creating some space in term
     print("\n")
 
-    #returning avgNodeDegree in format needed
-    return "avgNodeDegree:" + str(avgNodeDegree) + "\n"
+    #returning avgNodeDeg in format needed
+    return "avgNodeDeg:" + str(avgNodeDeg) + "\n"
 
 
 
@@ -126,35 +129,12 @@ def main():
     csv.field_size_limit(sys.maxsize)
 
 #calling the method for execution
-nodeDegreeDist()
+nodeDegDist()
+
+
+#for measuring execution time
+# print("--- %s seconds ---" % (time.time() - start_time))
 
 
 #calling main method for execution
 main()
-
-
-# -------------------------------previous attempts at trying to make this code work until we finally got it -------------------------------
-
-
-# def nodeDegreeDist():
-#     # Nodes and Edges
-#     G = nx.Graph()
-#     number_of_edges = 0
-
-#     with open("yelp-network.txt", 'r') as friends:
-#         yelp_data  = csv.reader(friends, delimiter=",")
-
-#         for col in yelp_data:
-#             if (col[0] != 'user_id friends'):
-#                 # Split frineds 
-#                 nodesSplit = col[0].split(' ')
-#                 # Check user and friend node before adding to graph
-#                 if nodesSplit[0] not in G.nodes():
-#                     G.add_node(nodesSplit[0])
-#                 if nodesSplit[1] not in G.nodes():
-#                     G.add_node(nodesSplit[1])
-
-#                 G.add_edge(nodesSplit[0], nodesSplit[1])
-    
-#     print("Number of nodes: " + str(G.number_of_nodes()))
-#     print("Number of edges: " + str(G.number_of_edges()))

@@ -1,7 +1,7 @@
 import csv, sys
 
 # I  am aware that opening the file at the beginning of each method is not the optimal solution, but I was having a hard time
-# figuring out how to create a helper method to open the file once and then call that method instead of the with statement.
+# figuring out how to create a helper method to open the file once and then call that method once instead of the with statement.
 
 #numOfBus: the number of businesses in the city
 def numOfBus(city):
@@ -9,13 +9,14 @@ def numOfBus(city):
     with open("yelp_business.csv", "r") as business:
         data = csv.reader(business, delimiter = ',')
     
+        #looping through data and counting the number of businesses in the city specified 
         for row in data:
             if row[4] == city:
                 counter = counter + 1
-    #print(round(counter,2))
-    return counter
 
-#numOfBus("McMurray")    
+    #returning the number of businesses in the city      
+    return counter
+  
 
 #avgStars: the average number of stars of a business in the city
 def avgStars(city):
@@ -26,33 +27,36 @@ def avgStars(city):
     with open("yelp_business.csv", "r") as business:
         data = csv.reader(business, delimiter = ',')
     
+        #looping through data and if city given in term is same as city in row[4] from yelp data then
         for row in data:
             if row[4] == city:
+
+                # increase counter add total stars for the businesses in that city and calculating the avg stars for the business
                 counter = counter + 1
                 numStars = numStars + float(row[9])
                 avrStars = numStars / counter
 
-    # print(numStars)        
-    #print(avrStars)
-    # print(counter)
+    #returning avg stars for every business in the city
     return avrStars
 
-#avgStars("McMurray")
 
 #numOfRestaurants: the number of restaurants in the city
 def numOfRestaurants(city):
     counter = 0
     with open("yelp_business.csv", "r") as business:
         data = csv.reader(business, delimiter = ',')
-    
+
+        # looping through data and counting the number of businesses in the city
         for row in data:
+
+            # if city from term is = city in row[4] of yelp data, and Restuarants is in row[12] specifiying that the business is a Restaurant 
+            # then we will increase the Restaurant counter
             if row[4] == city and 'Restaurants' in row[12]: 
                 counter = counter + 1    
-                    
-    #print(counter)
+    
+    # return the number of Restaurants in the city      
     return counter
 
-#numOfRestaurants("McMurray")
 
 #avgStarsRestaurants: the average number of stars of restaurants in the city
 def avgStarsRestaurants(city):
@@ -64,16 +68,21 @@ def avgStarsRestaurants(city):
         data = csv.reader(business, delimiter = ',')
     
         for row in data:
+
+            #if city from term is = city in row[4] of yelp data, and Restuarants is in row[12] specifiying that the business is a Restaurant 
+            # then we will increase the Restaurant counter
             if row[4] == city and 'Restaurants' in row[12]: 
                 counter = counter + 1    
+
+                # we will also add the number of stars for each Restaurant casting to a float to prepare for division
                 numStars = numStars + float(row[9])
+
+                #calculating average stars for each Restaurant 
                 avrStars = numStars / counter
-    # print(numStars)        
-   # print(avrStars)
-    # print(counter)               
+
+    # returning the average number of stars for each business that is a restuarant        
     return avrStars
 
-#avgStarsRestaurants('McMurray')
 
 #avgNumOfReviews: the average number of reviews for all businesses in the city
 def avgNumOfReviews(city):
@@ -88,12 +97,8 @@ def avgNumOfReviews(city):
                 numReviews = numReviews + float(row[10])
                 avgReviews = numReviews / counter
 
-    # print(counter)        
-    # print(numReviews)
-    #print(avgReviews)
     return avgReviews
 
-#avgNumOfReviews("McMurray")
 
 #avgNumOfReviewsBus: the average number of reviews for restaurants in the city
 def avgNumOfReviewsBus(city):
@@ -108,12 +113,8 @@ def avgNumOfReviewsBus(city):
                 numReviews = numReviews + float(row[10])
                 avgReviews = numReviews / counter
 
-    # print(counter)        
-    # print(numReviews)
-    #print(avgReviews)
     return avgReviews
-
-#avgNumOfReviewsBus('McMurray')    
+   
     
 
 def main():
@@ -132,13 +133,7 @@ def main():
         print("\nERROR: argv[1] must be dstats.py")
         sys.exit()
 
-    # with open("yelp_business.csv", "r") as business:
-    #     data = csv.reader(business, delimiter = ',')
-    #     for row in data:
-    #         if sys.argv[2] not in row[4]:
-    #             print("\nPlease enter a valid city, city entered is not in the valid list of cities\n")
-    #             sys.exit()
-
+    # city is = to term arg in 2nd position
     city = sys.argv[2]
                 
 

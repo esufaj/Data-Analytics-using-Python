@@ -1,5 +1,5 @@
+import matplotlib.pyplot as plt 
 import csv, sys
-import matplotlib.pyplot as plt
 
 # restaurantCategoryDist: a frequency distribution of the number of restaurants in each category of restaurants
 # (e.g.,  Chinese,  Japanese,  Korean,  Greek,  etc.)in  a  descending  order  of popularity 
@@ -8,42 +8,54 @@ import matplotlib.pyplot as plt
 
 def restaurantCategoryDist(city):
 
+
+    #opening yelp data 
     with open("yelp_business.csv", "r") as business:
         data = csv.reader(business, delimiter=",")
 
+        #declaring dict to store tags
         dataDict = {}
         dataSplit = ""
     
+        #looping through the yelp data
         for row in data:
             
+            #checking if city from term is same as city in the 4th column of yelp data
+            # also checking if the tag in column 12 has restuarant in it
             if row[4] == city and 'Restaurants' in row[12]:
                
+               #splitting tags by ;
                 dataSplit = row[12].split(";")
                
+                #looping through the split tags, not counting restuarant since it would be the most counted tag
                 for key in dataSplit:
                    
                     if key == 'Restaurants':
                         continue
                    
+                    #incrementing the counter for each tag if its seen in the dict
                     elif key in dataDict.keys():
                         dataDict[key] += 1
                     
+                    #if tag not in dict then we add it and give it an inital count of 1
                     else:
                         dataDict[key] = 1
-    
+
+    #sorting list in decreasing order
     sorteddictList = dict(sorted(dataDict.items(), key=lambda item: item[1], reverse=True))
 
-#getting the first 10 elements of the sorted list
+    #getting the first 10 elements of the sorted list
     top10 = {k: sorteddictList[k] for k in list(sorteddictList)[:10]}
 
-#printing in the correct format wanted by prof eg: categoryTag:value
+    #printing in the correct format wanted by prof eg: categoryTag:value
     for key, value in sorteddictList.items():
         print(key, ':', value)
 
-#creating the plot with the correct specifications having top 10 tags and spacing as to not cut anything off
+    #creating the plot with the correct specifications having top 10 tags and spacing as to not cut anything off
     categories = list(top10.keys())
     catCounts = list(top10.values())
     
+    #creating the graph (15,5) for extra spacing
     plt.figure(figsize=(15,5))
     plt.ylabel('Frequency')
     plt.xlabel('Restaurant Category')
@@ -54,14 +66,12 @@ def restaurantCategoryDist(city):
     plt.tight_layout()
 
 
-
-   
+    # returning the sorted list which contains tags in decreasing order
+    # we return the list so that we can use this method for calculations in restuarantReviewDist(city)
     return sorteddictList   
 
 
-# print('\n')
-# print(str(restaurantCategoryDist('McMurray')))
-# print('\n')
+
 
 # restaurantReviewDist: a frequency distribution of the number of reviews submitted for each category of restaurants 
 # (e.g., Chinese, Japanese, Korean, Greek, etc.) in a descending order 
@@ -70,9 +80,6 @@ def restaurantCategoryDist(city):
 
 def restaurantReviewDist(city):
    
-   tagCount = 0
-   starCount = 0
-   avgStars = 0.0
 
    with open("yelp_business.csv", "r") as business:
         data = csv.reader(business, delimiter=",")
@@ -89,29 +96,38 @@ def restaurantReviewDist(city):
     
         for row in data:
             
+             #checking if city from term is same as city in the 4th column of yelp data
+            # also checking if the tag in column 12 has restuarant in it
             if row[4] == city and 'Restaurants' in row[12]:
                
+               #splitting data in categories column
                 dataSplit = row[12].split(";")
                
+               #looping through split data
                 for key in dataSplit:
                    
                     if key == 'Restaurants': # if a tag == Restaurant do nothing, since we already assume we are looking at Restaurant tags
                         continue             # we only want to increment those tags that define the TYPE of Restaurant it is
                    
+                   #checking whether tag is in dict
                     if key in dataDict.keys():
                         
+                        #if tag is in dict we add the number of reviews for that tag to its current value
                         dataDict[key] += int(row[10])
+
+                    # same kets as dataDict but value is total num of stars rather then reviews    
                     if key in dataDict2.keys():
-    
+                        
+                        #if tag is in dict then we add the num of stars for that tag to its current value count
                         dataDict2[key] += float(row[9]) 
 
-                    
+                    #if the tag is not in the dict then we add it and give it its inital values which is found in their respective columns
                     else:
                         dataDict[key] = int(row[10])
                         dataDict2[key] = float(row[9])
                 
                
-
+        #sorting both dics in decreasing order
         sorteddictList = dict(sorted(dataDict.items(), key=lambda item: item[1], reverse=True))
         sorteddictList2 = dict(sorted(dataDict2.items(), key=lambda item: item[1], reverse=True))
 
@@ -121,24 +137,19 @@ def restaurantReviewDist(city):
         dictCOUNT = restaurantCategoryDist(city)
         print("\n \n")
 
-        # #Checker to make sure no division by 0
-        # for key, value in dictCOUNT.items():
-        #     if value == 0:
-        #         dictCOUNT.update({key:'1'})
         
 
         print("\n The total number of reviews for each restaurant by category from the city " +city+ ", as well as the average stars for those categories and ranked from most popular to least are: ")
 
+        #looping only through one dict is necessary since both dicts contain the same keys
+        #and in the same order, so both dicts can be accessed using the single loop 
         for key, value in sorteddictList.items():
+
+            #printing the key:value: total star count / tag count and rounding to 1 decimal place
             print(key ,':', value, ':', round(float(sorteddictList2[key]) / float(dictCOUNT[key]), 1))
 
-        # print(sorteddictList)
-        # print("\n \n \n")
-        # print(sorteddictList2)
 
-
-
-    
+        # returning nothing as nothing is needed to be returned, could change that later if needed
         return ""
 
 
@@ -159,13 +170,7 @@ def main():
         print("\nERROR: argv[1] must be yelp_business.csv")
         sys.exit()
 
-    # with open("yelp_business.csv", "r") as business:
-    #     data = csv.reader(business, delimiter = ',')
-    #     for row in data:
-    #         if sys.argv[2] not in row[4]:
-    #             print("\nPlease enter a valid city, city entered is not in the valid list of cities\n")
-    #             sys.exit()
-
+    # city is = to term arg in 2nd position
     city = sys.argv[2]
                 
     #Needed to remove the method call from here since I needed to get the dict by returning it from restuarantCategoryDist(city)
