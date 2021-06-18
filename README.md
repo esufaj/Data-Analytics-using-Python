@@ -1,5 +1,17 @@
 EECS4415 Big Data Systems Summer 2021 Assignment 1
 
+HOW TO RUN: 
+From the command line run:
+
+PART A: python3 dstats.py yelp_business.csv (city of your choice here)
+
+PART B: python3 dist-stats.py yelp_business.csv (city of your choice here)
+
+PART C: python3 graph-stats.py yelp-network.txt
+
+PART D: python3 yelp-network.py yelp-user.csv
+
+
 (10%): Data Analytics using PythonDue Date: 11:59 pmon Friday, May 21, 2021 Objective In  this assignment,  you  will write python programs/scriptsfor  performing  basic  analytics  on a  large dataset. The dataset  is  a  subset  of Yelp1's  businesses,  reviews,  and  user  data.  It  was  originally  put together  for the Yelp Dataset  Challenge  which  is  a  chance  for  students to  conduct  research or  analysis on  Yelp's  data. The dataset  contains  seven  CSV  files  including information  about  businesses  across  11 metropolitan areas in four countriesand can be accessed here(registration to Kaggle is required):Yelp dataset:https://www.kaggle.com/yelp-dataset/yelp-dataset/version/6orYelp dataset(local copy): https://www.eecs.yorku.ca/course_archive/2020-21/S/4415/yelp-data.zipThe  first  program (dstats.py)performs  descriptive  analytics ofthe  dataset.  The  second(dist-stats.py)computes  useful  frequency  distributions.  The third (yelp-network.py) constructs  a social network of Yelp friends. The fourth(graph-stats.py)performs basic network analytics.Important Notes: •You must use the submitcommand to electronically submit your solution by the due date. •Your programs should be tested on the docker image that we provided before being submitted.
 
 A. Descriptive Statistics (30%, 5% each)
